@@ -85,7 +85,11 @@ curl -fsSL -O https://raw.githubusercontent.com/searxng/searxng/master/container
 cp .env.example .env
 # Generate a secret key and add it to .env
 # (The transcript mentioned replacing SEARXNG_SECRET)
-sed -i "s/SEARXNG_SECRET=.*/SEARXNG_SECRET=$(openssl rand -hex 32)/" .env
+KEY=$(openssl rand -hex 32)
+
+grep -q '^SEARXNG_SECRET=' .env \
+  && sed -i "s/^SEARXNG_SECRET=.*/SEARXNG_SECRET=$KEY/" .env \
+  || echo "SEARXNG_SECRET=$KEY" >> .env
 
 # 4. Fetch default settings and enable JSON output (Required by OpenClaw)
 curl -fsSL -o ./core-config/settings.yml https://raw.githubusercontent.com/searxng/searxng/refs/heads/master/searx/settings.yml
