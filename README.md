@@ -91,7 +91,9 @@ sed -i "s/SEARXNG_SECRET=.*/SEARXNG_SECRET=$(openssl rand -hex 32)/" .env
 curl -fsSL -o ./core-config/settings.yml https://raw.githubusercontent.com/searxng/searxng/refs/heads/master/searx/settings.yml
 
 # Tweak settings.yml to support JSON
-sed -i 's/formats: \[html\]/formats: [html, json]/' ./core-config/settings.yml
+sed -i '/formats:/,/^[^ ]/ { /- html/a\
+    - json
+}' ./core-config/settings.yml
 
 # 5. Start SearXNG
 sudo docker compose up -d
